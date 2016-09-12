@@ -10,11 +10,10 @@ import Type (Rect (..))
 import RandNum (normRandom)
 
 mkRoom :: RandomGen g => V2 Int -> g -> Rect Int
-mkRoom boundarySize g = Rect pos' size
+mkRoom boundarySize g = Rect pos size
   where
     (pos,g') = mkPoint boundarySize g
     (size,_)  = mkBox fLength fRatio g'
-    pos' = pos - ((`div` 2) <$> P size)
 
     fLength = normRandom 10 5
     fRatio = randomR (0.2, 0.8)
