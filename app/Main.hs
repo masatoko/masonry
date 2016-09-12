@@ -1,6 +1,6 @@
 module Main where
 
-import System.Random
+import Masonry (test)
 
 main :: IO ()
-main = return ()
+main = test

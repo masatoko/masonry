@@ -15,9 +15,12 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     RandNum
+  exposed-modules:     Masonry
+                     , PrimRoom
+                     , RandNum
   build-depends:       base >= 4.7 && < 5
                      , random
+                     , linear
   default-language:    Haskell2010
 
 executable masonry-exe
@@ -27,6 +30,7 @@ executable masonry-exe
   build-depends:       base
                      , masonry
                      , random
+                     , linear
   default-language:    Haskell2010
 
 test-suite masonry-test

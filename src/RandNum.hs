@@ -1,4 +1,6 @@
-module RandNum where
+module RandNum
+( normRandom
+) where
 
 import System.Random
 
