@@ -16,7 +16,7 @@ data Object =
   deriving Show
 
 data Shape =
-  SRect (Rect Int)
+  SRect (Rect Double)
   deriving Show
 
 type Opacity = Double
@@ -42,14 +42,14 @@ export path stg as =
     shapes = zipWith convert [0..] as
     layered xs = ["<g id=\"layer1\">"] ++ xs ++ ["</g>"]
     --
-    w = svgWidth stg
-    h = svgHeight stg
+    w = resize $ svgWidth stg
+    h = resize $ svgHeight stg
 
 convert :: Int -> Object -> String
 convert i obj = unlines
   [ "<rect"
-  , "x=" ++ dq (x - w `div` 2)
-  , "y=" ++ dq (y - h `div` 2)
+  , "x=" ++ dq (x - w / 2)
+  , "y=" ++ dq (y - h / 2)
   , "width=" ++ dq w
   , "height=" ++ dq h
   , "id=" ++ dq i
@@ -60,8 +60,8 @@ convert i obj = unlines
     style = "\"opacity:1;"++ convFill fill ++ "fill-rule:nonzero;" ++ convStroke stroke ++ "stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:35.20000076\""
     --
     Object (SRect (Rect pos size)) fill stroke = obj
-    P (V2 x y) = pos
-    V2 w h     = size
+    P (V2 x y) = resize <$> pos
+    V2 w h     = resize <$> size
 
 convFill :: Fill -> String
 convFill (Fill color opacity) =
@@ -69,4 +69,7 @@ convFill (Fill color opacity) =
 
 convStroke :: Stroke -> String
 convStroke (Stroke color width opacity) =
-  "stroke:" ++ color ++ ";stroke-width:" ++ show width ++ ";stroke-opacity:" ++ show opacity ++ ";"
+  "stroke:" ++ color ++ ";stroke-width:" ++ show (resize width) ++ ";stroke-opacity:" ++ show opacity ++ ";"
+
+resize :: Num a => a -> a
+resize x = 10 * x
