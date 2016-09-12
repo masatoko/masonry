@@ -5,7 +5,7 @@ module Separate
 import Linear.Affine
 import Linear.V2
 import Data.List (foldl')
-import Data.Maybe (mapMaybe)
+import Data.Maybe (mapMaybe, fromMaybe)
 
 import Type
 
@@ -16,15 +16,21 @@ separate rs0 = map work irs
   where
     irs = zip [0..] rs0
     --
-    work (i,r) = Rect (pos - P delta) size
+    work (i,r) = Rect (pos + P delta) size
       where
         (Rect pos size) = r
         --
         rs' = map snd $ filter ((/= i) . fst) irs
-        vs = mapMaybe (penetration r) rs'
+        vs = mapMaybe (exclusion r) rs'
         --
         n = fromIntegral $ 1 `max` length vs
-        delta = (/ (10 * n)) <$> sum vs
+        delta = (/ n) <$> (sum vs)
+
+exclusion :: Room -> Room -> Maybe (V2 Double)
+exclusion ra rb = work <$> mv
+  where
+    mv = penetration ra rb
+    work = fmap (negate . (/10))
 
 penetration :: Room -> Room -> Maybe (V2 Double)
 penetration ra rb =
