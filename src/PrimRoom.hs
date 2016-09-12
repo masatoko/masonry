@@ -1,5 +1,5 @@
 module PrimRoom
-( mkRoom
+( makePrimRoom
 ) where
 
 import System.Random
@@ -11,8 +11,8 @@ import RandNum (normRandom)
 
 type RandFunc g = g -> (Double, g)
 
-mkRoom :: RandomGen g => V2 Int -> g -> (Rect Double, g)
-mkRoom boundarySize g = (Rect pos size, g'')
+makePrimRoom :: RandomGen g => V2 Int -> g -> (Rect Double, g)
+makePrimRoom boundarySize g = (Rect pos size, g'')
   where
     (pos,g')   = mkPoint boundarySize g
     (size,g'') = mkBox fLength fRatio g'
