@@ -5,10 +5,14 @@ module Masonry
 import Linear.V2
 import System.Random
 
+import Type (Rect (..))
 import PrimRoom (mkRoom)
 
 test :: IO ()
-test = mapM_ work [0..10]
+test = exportRooms $ map work [0..10]
   where
-    work = print . mkRoom size . mkStdGen
+    work = mkRoom size . mkStdGen
     size = V2 30 20
+
+exportRooms :: [Rect Int] -> IO ()
+exportRooms = mapM_ print

@@ -6,11 +6,8 @@ import System.Random
 import Linear.Affine
 import Linear.V2
 
+import Type (Rect (..))
 import RandNum (normRandom)
-
-data Rect a =
-  Rect (Point V2 a) (V2 a)
-  deriving Show
 
 mkRoom :: RandomGen g => V2 Int -> g -> Rect Int
 mkRoom boundarySize g = Rect pos' size
