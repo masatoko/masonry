@@ -11,6 +11,8 @@ import RandNum (normRandom)
 
 type RandFunc g = g -> (Double, g)
 
+-- Make Room
+
 makePrimRoom :: RandomGen g => V2 Double -> g -> (Rect Double, g)
 makePrimRoom boundarySize g = (Rect pos size, g'')
   where
@@ -19,6 +21,8 @@ makePrimRoom boundarySize g = (Rect pos size, g'')
 
     fLength = normRandom 8 4
     fRatio  = normRandom 0.5 0.2
+
+-- Random Shapes
 
 mkPoint :: RandomGen g => V2 Double -> g -> (Point V2 Double, g)
 mkPoint (V2 w h) g = (p, g'')
