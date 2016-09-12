@@ -1,3 +1,5 @@
+{-# LANGUAGE MultiWayIf #-}
+
 module Separate
 ( separate
 ) where
@@ -11,8 +13,8 @@ import Type
 
 type Room = Rect Double
 
-separate :: [Room] -> [Room]
-separate rs0 = map work irs
+separate :: V2 Double -> [Room] -> [Room]
+separate (V2 w0 h0) rs0 = map work irs
   where
     irs = zip [0..] rs0
     --
@@ -24,13 +26,22 @@ separate rs0 = map work irs
         vs = mapMaybe (exclusion r) rs'
         --
         n = fromIntegral $ 1 `max` length vs
-        delta = (/ n) <$> (sum vs)
+        delta = (/ n) <$> sum vs
 
-exclusion :: Room -> Room -> Maybe (V2 Double)
-exclusion ra rb = work <$> mv
-  where
-    mv = penetration ra rb
-    work = fmap (negate . (/10))
+    exclusion :: Room -> Room -> Maybe (V2 Double)
+    exclusion ra rb = ((outer +) . work) <$> mv
+      where
+        mv = penetration ra rb
+        work = fmap (negate . (/10))
+
+        (Rect (P (V2 x y)) _) = ra
+        x' = if | x < 0     -> 5
+                | x > w0    -> -5
+                | otherwise -> 0
+        y' = if | y < 0     -> 5
+                | y > h0    -> -5
+                | otherwise -> 0
+        outer = V2 x' y'
 
 penetration :: Room -> Room -> Maybe (V2 Double)
 penetration ra rb =

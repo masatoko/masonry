@@ -7,8 +7,8 @@ import Type
 
 data Settings
   = Settings
-      { svgWidth :: Int
-      , svgHeight :: Int
+      { svgWidth :: Double
+      , svgHeight :: Double
       } deriving (Show, Read)
 
 data Object =

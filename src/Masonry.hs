@@ -21,8 +21,8 @@ test seed = do
       let path = "c:/_temp/rooms" ++ show i ++ ".svg"
       exportRooms path size rs
   where
-    rs0 = go (mkStdGen seed) 30
-    rss = scanl' (\a _ -> separate a) rs0 [0..1000]
+    rs0 = go (mkStdGen seed) 50
+    rss = scanl' (\a _ -> separate size a) rs0 [0..1000]
     --
     size = V2 30 30
     --
@@ -31,7 +31,7 @@ test seed = do
       where
         (r',g') = makePrimRoom size g
 
-exportRooms :: FilePath -> V2 Int -> [Rect Double] -> IO ()
+exportRooms :: FilePath -> V2 Double -> [Rect Double] -> IO ()
 exportRooms path (V2 w h) rs =
   SVG.export path stg rs'
   where
@@ -39,9 +39,7 @@ exportRooms path (V2 w h) rs =
     fill   = SVG.Fill "#0000ff" 0.4
     stroke = SVG.Stroke "#ffffff" 0.2 0.6
     --
-    w' = fromIntegral w
-    h' = fromIntegral h
-    bg  = SVG.Object (SVG.SRect (Rect (P $ V2 (w'/2) (h'/2)) (V2 w' h')))
+    bg  = SVG.Object (SVG.SRect (Rect (P $ V2 (w/2) (h/2)) (V2 w h)))
                      (SVG.Fill "#000000" 1)
                      (SVG.Stroke "#ffffff" 0 0)
     rs' = bg : map (\r -> SVG.Object (SVG.SRect r) fill stroke) rs
