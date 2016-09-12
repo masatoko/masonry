@@ -23,7 +23,7 @@ test seed =
 
 exportRooms :: V2 Int -> [Rect Double] -> IO ()
 exportRooms (V2 w h) rs =
-  SVG.export "rooms.svg" stg rs'
+  SVG.export "c:/_temp/rooms.svg" stg rs'
   where
     stg    = SVG.Settings w h
     fill   = SVG.Fill "#0000ff" 0.4
