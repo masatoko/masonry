@@ -20,6 +20,7 @@ library
                      , RandNum
                      , Type
                      , SVG
+                     , Separate
   build-depends:       base >= 4.7 && < 5
                      , random
                      , linear

@@ -17,7 +17,7 @@ test :: Int -> IO ()
 test seed = do
   exportRooms "c:/_temp/rooms.svg" size rs0
   forM_ (zip [0..] rss) $ \(i,rs) ->
-    when (i `mod` 100 == 0) $ do
+    when (i `mod` 100 == 0 || (i < 100 && i `mod` 10 == 0)) $ do
       let path = "c:/_temp/rooms" ++ show i ++ ".svg"
       exportRooms path size rs
   where
