@@ -23,29 +23,38 @@ import Render
 
 test :: SDL.Renderer -> Int -> IO ()
 test rnd seed = do
-  let rss = separateRooms size seed rs0
-  forM_ (zip [0..] rss) $ \(i,rs) -> do
-    when (i `mod` 10 == 0) $ print i
-    clearScreen rnd $ V4 0 0 0 255
-    frame
-    --
-    mapM_ (work rnd) rs
-    SDL.present rnd
-    --
-    threadDelay 10000
+  let drawRss rss =
+        forM_ (zip [0..] rss) $ \(i,rs) -> do
+          when (i `mod` 10 == 0) $ print i
+          clearScreen rnd $ V4 0 0 0 255
+          frame
+          --
+          mapM_ (draw blue rnd) rs
+          SDL.present rnd
+          --
+          threadDelay 5000
 
-  let rs' = removeOutRooms size (last rss)
-  -- clearScreen rnd $ V4 0 0 0 255
-  -- frame
-  mapM_ (work rnd . roundPos) rs'
+  let rss0 = separateRooms size 200 0.1 rs0
+      rss1 = separateRooms size 500 0     $ last rss0
+  drawRss rss0
+  drawRss rss1
+
+  let rs' = removeOutRooms size (last rss1)
+  SDL.rendererDrawColor rnd $= V4 0 0 0 200
+  drawRect rnd $ Rect (pure 0) size
+  frame
+  mapM_ (draw blue rnd . roundPos) rs'
   SDL.present rnd
 
   where
     frame = do
       SDL.rendererDrawColor rnd $= V4 255 0 0 200
       drawRect rnd $ Rect (pure 0) size
-    work rnd rect = do
-      SDL.rendererDrawColor rnd $= V4 0 0 255 100
+
+    blue = V4 0 0 255 100
+    red  = V4 255 0 255 100
+    draw color rnd rect = do
+      SDL.rendererDrawColor rnd $= color
       fillRect rnd rect
       SDL.rendererDrawColor rnd $= V4 255 255 255 200
       drawRect rnd rect

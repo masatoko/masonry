@@ -22,7 +22,7 @@ makePrimRoom boundarySize g = (Rect pos' size', g'')
     pos'  = (fromIntegral . round) <$> (pos - P (size ^/ 2))
     size' = (fromIntegral . round) <$> size
 
-    fLength = normRandom 14 3
+    fLength = normRandom 10 5
     fRatio  = normRandom 0.5 0.2
 
 -- Random Shapes

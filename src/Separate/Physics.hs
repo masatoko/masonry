@@ -16,14 +16,12 @@ import Type
 
 type Room = Rect Double
 
-separateRooms :: V2 Double -> Int -> [Room] -> [[Room]]
-separateRooms size seed rs0 =
-  scanl' (\a _ -> separate size a) rs0 [0..numIteration]
-  where
-    numIteration = 500
+separateRooms :: V2 Double -> Int -> Double -> [Room] -> [[Room]]
+separateRooms size numIteration hold rs0 =
+  scanl' (\a _ -> separate size hold a) rs0 [0..numIteration]
 
-separate :: V2 Double -> [Room] -> [Room]
-separate (V2 w0 h0) rs0 = map work irs
+separate :: V2 Double -> Double -> [Room] -> [Room]
+separate (V2 w0 h0) hold rs0 = map work irs
   where
     irs = zip [0..] rs0
     --
@@ -35,8 +33,8 @@ separate (V2 w0 h0) rs0 = map work irs
         vs = mapMaybe (exclusion r) rs'
         --
         n = fromIntegral $ 1 `max` length vs
-        -- delta = (\x -> 2 * x / n) <$> sum vs
-        delta = fromMaybe (pure 0) . lastMay $ sortBy ordAbs vs
+        delta = (/ n) <$> sum vs
+        -- delta = fromMaybe (pure 0) . lastMay $ sortBy ordAbs vs
         ordAbs x y = work x `compare` work y
           where
             work (V2 a b) = abs a + abs b
@@ -45,21 +43,21 @@ separate (V2 w0 h0) rs0 = map work irs
     exclusion ra rb = ((outer +) . work) <$> mv
       where
         mv = penetration ra rb
-        work = fmap (negate . (/10)) . minpen
+        work = fmap (negate . (/3)) . minpen
         minpen (V2 x y) =
           if abs x < abs y
             then V2 x 0
             else V2 0 y
 
         (Rect (P (V2 x y)) (V2 w h)) = ra
-        x' = if | x < 0      -> 0.5
-                | x + w > w0 -> -0.5
-                | otherwise  -> 0
-        y' = if | y < 0      -> 0.5
-                | y + h > h0 -> -0.5
-                | otherwise  -> 0
-        -- outer = V2 x' y'
-        outer = pure 0
+        vx = if | x < 0      -> V2 hold hold
+                | x + w > w0 -> V2 (-hold) (-hold)
+                | otherwise  -> pure 0
+        vy = if | y < 0      -> V2 (-hold) hold
+                | y + h > h0 -> V2 hold (-hold)
+                | otherwise  -> pure 0
+        outer = vx + vy
+        -- outer = pure 0
 
 penetration :: Room -> Room -> Maybe (V2 Double)
 penetration ra rb =
