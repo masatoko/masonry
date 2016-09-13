@@ -18,11 +18,12 @@ import Type (Rect (..), fat)
 import PrimRoom (makePrimRoom)
 import qualified SVG
 import Separate.Physics (separateRooms)
+import Conf
 
 import Render
 
-test :: SDL.Renderer -> Int -> IO ()
-test rnd seed = do
+test :: Conf -> SDL.Renderer -> Int -> IO ()
+test conf rnd seed = do
   clearScreen rnd black
   forM_ rs0 $ \r -> do
     draw blue rnd r
@@ -39,8 +40,8 @@ test rnd seed = do
             --
             threadDelay 30000
 
-  let rss0 = separateRooms size 200 0.1 rs0
-      rss1 = separateRooms size 500 0     $ last rss0
+  let rss0 = separateRooms conf 200 0.1 rs0
+      rss1 = separateRooms conf 500 0     $ last rss0
   drawRss rss0
   drawRss rss1
 
@@ -53,6 +54,9 @@ test rnd seed = do
   SDL.present rnd
 
   where
+    size = V2 (fromIntegral $ confWidth conf) (fromIntegral $ confHeight conf)
+    numRooms = confNumRooms conf
+    --
     go i
       | i < 100   = i `mod` 3 == 0
       | otherwise = i `mod` 10 == 0
@@ -75,10 +79,7 @@ test rnd seed = do
         go _ 0 = []
         go g i = r' : go g' (i-1)
           where
-            (r',g') = makePrimRoom size g
-    --
-    size = V2 30 30
-    numRooms = 50
+            (r',g') = makePrimRoom conf g
 
 removeOutRooms :: V2 Double -> [Rect Double] -> [Rect Double]
 removeOutRooms (V2 w' h') = filter within

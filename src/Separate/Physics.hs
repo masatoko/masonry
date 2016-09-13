@@ -13,16 +13,19 @@ import Data.Maybe (mapMaybe, fromMaybe)
 import Safe (lastMay)
 
 import Type
+import Conf
 
 type Room = Rect Double
 
-separateRooms :: V2 Double -> Int -> Double -> [Room] -> [[Room]]
-separateRooms size numIteration hold rs0 =
-  scanl' (\a _ -> separate size hold a) rs0 [0..numIteration]
+separateRooms :: Conf -> Int -> Double -> [Room] -> [[Room]]
+separateRooms conf numIteration hold rs0 =
+  scanl' (\a _ -> separate conf hold a) rs0 [0..numIteration]
 
-separate :: V2 Double -> Double -> [Room] -> [Room]
-separate (V2 w0 h0) hold rs0 = map work irs
+separate :: Conf -> Double -> [Room] -> [Room]
+separate conf hold rs0 = map work irs
   where
+    w0 = fromIntegral $ confWidth conf
+    h0 = fromIntegral $ confHeight conf
     irs = zip [0..] rs0
     --
     work (i,r) = Rect (pos + P delta) size

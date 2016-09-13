@@ -36,21 +36,21 @@ main = do
   win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 500 500}
   SDL.showWindow win
 
-  generate arg win
+  generate conf arg win
   _ <- getChar
 
   SDL.destroyWindow win
   SDL.quit
 
-generate :: String -> SDL.Window -> IO ()
-generate arg win = do
+generate :: Conf -> String -> SDL.Window -> IO ()
+generate conf arg win = do
   r <- SDL.createRenderer win 0 SDL.defaultRenderer
   SDL.rendererDrawBlendMode r $= SDL.BlendAlphaBlend
   SDL.clear r
   --
   let i = read arg
   forM_ [0..] $ \x -> do
-    test r $ i + x
+    test conf r $ i + x
     threadDelay 1000000
   --
   SDL.present r

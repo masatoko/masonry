@@ -9,21 +9,23 @@ import Linear.Vector
 
 import Type (Rect (..))
 import RandNum (normRandom)
+import Conf
 
 type RandFunc g = g -> (Double, g)
 
 -- Make Room
 
-makePrimRoom :: RandomGen g => V2 Double -> g -> (Rect Double, g)
-makePrimRoom boundarySize g = (Rect pos' size', g'')
+makePrimRoom :: RandomGen g => Conf -> g -> (Rect Double, g)
+makePrimRoom conf g = (Rect pos' size', g'')
   where
+    boundarySize = V2 (fromIntegral $ confWidth conf) (fromIntegral $ confHeight conf)
     (pos,g')   = mkPoint boundarySize g
     (size,g'') = mkBox fLength fRatio g'
     pos'  = (fromIntegral . round) <$> (pos - P (size ^/ 2))
     size' = (fromIntegral . round) <$> size
 
-    fLength = normRandom 10 5
-    fRatio  = normRandom 0.5 0.2
+    fLength = normRandom (confLengthMu conf) (confLengthSigma conf)
+    fRatio  = normRandom (confRatioMu conf) (confRatioSigma conf)
 
 -- Random Shapes
 
