@@ -5,6 +5,7 @@ module PrimRoom
 import System.Random
 import Linear.Affine
 import Linear.V2
+import Linear.Vector
 
 import Type (Rect (..))
 import RandNum (normRandom)
@@ -14,10 +15,11 @@ type RandFunc g = g -> (Double, g)
 -- Make Room
 
 makePrimRoom :: RandomGen g => V2 Double -> g -> (Rect Double, g)
-makePrimRoom boundarySize g = (Rect pos size, g'')
+makePrimRoom boundarySize g = (Rect pos' size, g'')
   where
     (pos,g')   = mkPoint boundarySize g
     (size,g'') = mkBox fLength fRatio g'
+    pos' = pos - P (size ^/ 2)
 
     fLength = normRandom 8 4
     fRatio  = normRandom 0.5 0.2

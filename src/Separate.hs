@@ -35,11 +35,11 @@ separate (V2 w0 h0) rs0 = map work irs
         work = fmap (negate . (/10))
 
         (Rect (P (V2 x y)) _) = ra
-        x' = if | x < 0     -> 5
-                | x > w0    -> -5
+        x' = if | x < 0     -> 1
+                | x > w0    -> -1
                 | otherwise -> 0
-        y' = if | y < 0     -> 5
-                | y > h0    -> -5
+        y' = if | y < 0     -> 1
+                | y > h0    -> -1
                 | otherwise -> 0
         outer = V2 x' y'
 
@@ -59,8 +59,4 @@ penetration ra rb =
     work x = if x >= 0 then Just x else Nothing
     absMin x y = if abs x < abs y then x else y
 
-box (Rect (P (V2 x y)) (V2 w h)) =
-  (V2 (x - w') (y - h'), V2 (x + w') (y + h'))
-  where
-    w' = w / 2
-    h' = h / 2
+box (Rect (P (V2 x y)) (V2 w h)) = (V2 x y, V2 (x + w) (y + h))
