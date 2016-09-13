@@ -13,9 +13,13 @@ clearScreen r color = do
   SDL.rendererDrawColor r $= color
   SDL.clear r
 
+fillRect :: SDL.Renderer -> Rect Double -> IO ()
+fillRect r rect =
+  SDL.fillRect r $ Just (convRect rect)
+
 drawRect :: SDL.Renderer -> Rect Double -> IO ()
 drawRect r rect =
-  SDL.drawRect r (Just (convRect rect))
+  SDL.drawRect r $ Just (convRect rect)
 
 convRect (Rect pos size) = SDL.Rectangle pos' size'
   where

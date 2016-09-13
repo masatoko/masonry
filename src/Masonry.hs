@@ -18,25 +18,30 @@ import PrimRoom (makePrimRoom)
 import qualified SVG
 import Separate (separate)
 
-import Render (clearScreen, drawRect)
+import Render
 
 test :: SDL.Renderer -> Int -> IO ()
 test rnd seed =
-  -- exportRooms "c:/_temp/rooms.svg" size rs0
   forM_ (zip [0..] rss) $ \(i,rs) -> do
     when (i `mod` 10 == 0) $ print i
     clearScreen rnd $ V4 0 0 0 255
-    SDL.rendererDrawColor rnd $= V4 0 0 255 255
-    mapM_ (drawRect rnd) rs
+    mapM_ (work rnd) rs
     SDL.present rnd
     --
     threadDelay 50000
-
   where
-    rs0 = go (mkStdGen seed) 50
-    rss = scanl' (\a _ -> separate size a) rs0 [0..300]
+    work rnd rect = do
+      SDL.rendererDrawColor rnd $= V4 0 0 255 100
+      fillRect rnd rect
+      SDL.rendererDrawColor rnd $= V4 255 255 255 100
+      drawRect rnd rect
+    --
+    rs0 = go (mkStdGen seed) numRooms
+    rss = scanl' (\a _ -> separate size a) rs0 [0..numIteration]
     --
     size = V2 30 30
+    numRooms = 30
+    numIteration = 100
     --
     go _ 0 = []
     go g i = r' : go g' (i-1)

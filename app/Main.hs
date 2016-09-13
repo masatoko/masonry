@@ -42,6 +42,7 @@ main = do
 generate :: SDL.Window -> IO ()
 generate win = do
   r <- SDL.createRenderer win 0 SDL.defaultRenderer
+  SDL.rendererDrawBlendMode r $= SDL.BlendAlphaBlend
   SDL.clear r
   --
   -- let room = fst . makePrimRoom size $ mkStdGen 100
