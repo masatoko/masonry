@@ -44,9 +44,10 @@ generate win = do
   r <- SDL.createRenderer win 0 SDL.defaultRenderer
   SDL.clear r
   --
-  let room = fst . makePrimRoom size $ mkStdGen 100
-  print room
-  SDL.rendererDrawColor r $= V4 0 0 255 255
-  drawRect r room
+  -- let room = fst . makePrimRoom size $ mkStdGen 100
+  -- print room
+  -- SDL.rendererDrawColor r $= V4 0 0 255 255
+  -- drawRect r room
+  test r 1010
   --
   SDL.present r

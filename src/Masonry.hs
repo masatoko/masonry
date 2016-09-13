@@ -2,27 +2,39 @@ module Masonry
 ( test
 ) where
 
+import Control.Concurrent (threadDelay)
 import Control.Monad (forM_, when)
 import Linear.Affine
 import Linear.V2
+import Linear.V4
 import System.Random
 import Data.List (scanl')
+
+import SDL (($=))
+import qualified SDL
 
 import Type (Rect (..))
 import PrimRoom (makePrimRoom)
 import qualified SVG
 import Separate (separate)
 
-test :: Int -> IO ()
-test seed = do
-  exportRooms "c:/_temp/rooms.svg" size rs0
-  forM_ (zip [0..] rss) $ \(i,rs) ->
-    when (i `mod` 100 == 0 || (i < 100 && i `mod` 10 == 0)) $ do
-      let path = "c:/_temp/rooms" ++ show i ++ ".svg"
-      exportRooms path size rs
+import Render (clearScreen, drawRect)
+
+test :: SDL.Renderer -> Int -> IO ()
+test rnd seed =
+  -- exportRooms "c:/_temp/rooms.svg" size rs0
+  forM_ (zip [0..] rss) $ \(i,rs) -> do
+    when (i `mod` 10 == 0) $ print i
+    clearScreen rnd $ V4 0 0 0 255
+    SDL.rendererDrawColor rnd $= V4 0 0 255 255
+    mapM_ (drawRect rnd) rs
+    SDL.present rnd
+    --
+    threadDelay 50000
+
   where
     rs0 = go (mkStdGen seed) 50
-    rss = scanl' (\a _ -> separate size a) rs0 [0..1000]
+    rss = scanl' (\a _ -> separate size a) rs0 [0..300]
     --
     size = V2 30 30
     --
