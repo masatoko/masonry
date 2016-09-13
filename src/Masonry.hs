@@ -19,6 +19,7 @@ import PrimRoom (makePrimRoom)
 import qualified SVG
 import Separate.Physics (separateRooms)
 import Conf
+import Field
 
 import Render
 
@@ -45,6 +46,7 @@ test conf rnd seed = do
   drawRss rss0
   drawRss rss1
 
+  -- Render
   let rs' = map roundPos $ removeOutRooms size (last rss1)
   SDL.rendererDrawColor rnd $= V4 0 0 0 200
   drawRect rnd $ Rect (pure 0) size
@@ -52,6 +54,15 @@ test conf rnd seed = do
   mapM_ (draw (V4 255 255 255 250) rnd . fat 1) rs'
   mapM_ (draw (V4 0 255 0 250) rnd) rs'
   SDL.present rnd
+  -- Render
+
+  -- Rasterise
+  let wallField = foldl1 unionField . map (rectToCellField Wall size . fat 1) $ rs'
+      floorField = foldl1 unionField . map (rectToCellField Floor size) $ rs'
+      field = wallField `unionField` floorField
+  -- print field
+  mapM_ putStrLn $ dumpField (confWidth conf) field
+  -- Rasterise
 
   where
     size = V2 (fromIntegral $ confWidth conf) (fromIntegral $ confHeight conf)
