@@ -6,8 +6,9 @@ module Separate
 
 import Linear.Affine
 import Linear.V2
-import Data.List (foldl')
+import Data.List (foldl', sortBy)
 import Data.Maybe (mapMaybe, fromMaybe)
+import Safe (lastMay)
 
 import Type
 
@@ -26,21 +27,29 @@ separate (V2 w0 h0) rs0 = map work irs
         vs = mapMaybe (exclusion r) rs'
         --
         n = fromIntegral $ 1 `max` length vs
-        delta = (/ n) <$> sum vs
+        delta = (\x -> 2 * x / n) <$> sum vs
+        -- delta = fromMaybe (pure 0) . lastMay $ sortBy ordAbs vs
+        ordAbs x y = work x `compare` work y
+          where
+            work (V2 a b) = abs a + abs b
 
     exclusion :: Room -> Room -> Maybe (V2 Double)
     exclusion ra rb = ((outer +) . work) <$> mv
       where
         mv = penetration ra rb
         work = fmap (negate . (/10))
+        minpen (V2 x y) =
+          if abs x < abs y
+            then V2 x 0
+            else V2 0 y
 
-        (Rect (P (V2 x y)) _) = ra
-        x' = if | x < 0     -> 5
-                | x > w0    -> -5
-                | otherwise -> 0
-        y' = if | y < 0     -> 5
-                | y > h0    -> -5
-                | otherwise -> 0
+        (Rect (P (V2 x y)) (V2 w h)) = ra
+        x' = if | x < 0      -> 0.5
+                | x + w > w0 -> -0.5
+                | otherwise  -> 0
+        y' = if | y < 0      -> 0.5
+                | y + h > h0 -> -0.5
+                | otherwise  -> 0
         outer = V2 x' y'
 
 penetration :: Room -> Room -> Maybe (V2 Double)
@@ -59,8 +68,4 @@ penetration ra rb =
     work x = if x >= 0 then Just x else Nothing
     absMin x y = if abs x < abs y then x else y
 
-box (Rect (P (V2 x y)) (V2 w h)) =
-  (V2 (x - w') (y - h'), V2 (x + w') (y + h'))
-  where
-    w' = w / 2
-    h' = h / 2
+box (Rect (P (V2 x y)) (V2 w h)) = (V2 x y, V2 (x + w) (y + h))

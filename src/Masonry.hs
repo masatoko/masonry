@@ -2,29 +2,50 @@ module Masonry
 ( test
 ) where
 
+import Control.Concurrent (threadDelay)
 import Control.Monad (forM_, when)
 import Linear.Affine
 import Linear.V2
+import Linear.V4
+import Linear.Vector
 import System.Random
 import Data.List (scanl')
+
+import SDL (($=))
+import qualified SDL
 
 import Type (Rect (..))
 import PrimRoom (makePrimRoom)
 import qualified SVG
 import Separate (separate)
 
-test :: Int -> IO ()
-test seed = do
-  exportRooms "c:/_temp/rooms.svg" size rs0
-  forM_ (zip [0..] rss) $ \(i,rs) ->
-    when (i `mod` 100 == 0 || (i < 100 && i `mod` 10 == 0)) $ do
-      let path = "c:/_temp/rooms" ++ show i ++ ".svg"
-      exportRooms path size rs
+import Render
+
+test :: SDL.Renderer -> Int -> IO ()
+test rnd seed =
+  forM_ (zip [0..] rss) $ \(i,rs) -> do
+    when (i `mod` 10 == 0) $ print i
+    clearScreen rnd $ V4 0 0 0 255
+    SDL.rendererDrawColor rnd $= V4 255 0 0 200
+    drawRect rnd $ Rect (pure 0) size
+    --
+    mapM_ (work rnd) rs
+    SDL.present rnd
+    --
+    threadDelay 10000
   where
-    rs0 = go (mkStdGen seed) 50
-    rss = scanl' (\a _ -> separate size a) rs0 [0..1000]
+    work rnd rect = do
+      SDL.rendererDrawColor rnd $= V4 0 0 255 100
+      fillRect rnd rect
+      SDL.rendererDrawColor rnd $= V4 255 255 255 200
+      drawRect rnd rect
+    --
+    rs0 = go (mkStdGen seed) numRooms
+    rss = scanl' (\a _ -> separate size a) rs0 [0..numIteration]
     --
     size = V2 30 30
+    numRooms = 50
+    numIteration = 100
     --
     go _ 0 = []
     go g i = r' : go g' (i-1)
