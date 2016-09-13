@@ -34,6 +34,7 @@ executable masonry-exe
                      , masonry
                      , random
                      , linear
+                     , sdl2
   default-language:    Haskell2010
 
 test-suite masonry-test
