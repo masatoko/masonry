@@ -22,7 +22,7 @@ makePrimRoom boundarySize g = (Rect pos' size', g'')
     pos'  = (fromIntegral . round) <$> (pos - P (size ^/ 2))
     size' = (fromIntegral . round) <$> size
 
-    fLength = normRandom 8 6
+    fLength = normRandom 14 3
     fRatio  = normRandom 0.5 0.2
 
 -- Random Shapes
@@ -30,8 +30,8 @@ makePrimRoom boundarySize g = (Rect pos' size', g'')
 mkPoint :: RandomGen g => V2 Double -> g -> (Point V2 Double, g)
 mkPoint (V2 w h) g = (p, g'')
   where
-    (x,g')  = normRandom (w/2) (w/8) g
-    (y,g'') = normRandom (h/2) (h/8) g'
+    (x,g')  = normRandom (w/2) (w/4) g
+    (y,g'') = normRandom (h/2) (h/4) g'
     p = P $ V2 x y
 
 mkBox :: RandomGen g => RandFunc g -> RandFunc g -> g -> (V2 Double, g)

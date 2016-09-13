@@ -22,18 +22,28 @@ import Separate.Physics (separateRooms)
 import Render
 
 test :: SDL.Renderer -> Int -> IO ()
-test rnd seed =
+test rnd seed = do
+  let rss = separateRooms size seed rs0
   forM_ (zip [0..] rss) $ \(i,rs) -> do
     when (i `mod` 10 == 0) $ print i
     clearScreen rnd $ V4 0 0 0 255
-    SDL.rendererDrawColor rnd $= V4 255 0 0 200
-    drawRect rnd $ Rect (pure 0) size
+    frame
     --
     mapM_ (work rnd) rs
     SDL.present rnd
     --
     threadDelay 10000
+
+  let rs' = removeOutRooms size (last rss)
+  -- clearScreen rnd $ V4 0 0 0 255
+  -- frame
+  mapM_ (work rnd . roundPos) rs'
+  SDL.present rnd
+
   where
+    frame = do
+      SDL.rendererDrawColor rnd $= V4 255 0 0 200
+      drawRect rnd $ Rect (pure 0) size
     work rnd rect = do
       SDL.rendererDrawColor rnd $= V4 0 0 255 100
       fillRect rnd rect
@@ -46,10 +56,21 @@ test rnd seed =
         go g i = r' : go g' (i-1)
           where
             (r',g') = makePrimRoom size g
-    rss = separateRooms size seed rs0
     --
     size = V2 30 30
     numRooms = 50
+
+removeOutRooms :: V2 Double -> [Rect Double] -> [Rect Double]
+removeOutRooms (V2 w' h') = filter within
+  where
+    within (Rect (P (V2 x y)) (V2 w h)) =
+      x >= 0 && x + w <= w' && y >= 0 && y + h <= h'
+
+roundPos :: Rect Double -> Rect Double
+roundPos (Rect pos size) =
+  Rect pos' size
+  where
+    pos' = (fromIntegral . round) <$> pos
 
 exportRooms :: FilePath -> V2 Double -> [Rect Double] -> IO ()
 exportRooms path (V2 w h) rs =

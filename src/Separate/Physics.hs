@@ -20,7 +20,7 @@ separateRooms :: V2 Double -> Int -> [Room] -> [[Room]]
 separateRooms size seed rs0 =
   scanl' (\a _ -> separate size a) rs0 [0..numIteration]
   where
-    numIteration = 300
+    numIteration = 500
 
 separate :: V2 Double -> [Room] -> [Room]
 separate (V2 w0 h0) rs0 = map work irs
