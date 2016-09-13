@@ -3,7 +3,8 @@
 module Main where
 
 import System.Environment (getArgs)
--- import Control.Concurrent (threadDelay)
+import Control.Monad (when, forM_)
+import Control.Concurrent (threadDelay)
 import Linear.Affine
 import Linear.V2
 import Linear.V4
@@ -45,6 +46,9 @@ generate arg win = do
   SDL.rendererDrawBlendMode r $= SDL.BlendAlphaBlend
   SDL.clear r
   --
-  test r $ read arg
+  let i = read arg
+  forM_ [0..] $ \x -> do
+    test r $ i + x
+    threadDelay 1000000
   --
   SDL.present r
