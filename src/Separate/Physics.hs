@@ -42,7 +42,9 @@ separate (V2 w0 h0) hold rs0 = map work irs
     exclusion :: Room -> Room -> Maybe (V2 Double)
     exclusion ra rb = ((outer +) . work) <$> mv
       where
-        mv = penetration ra rb
+        ra' = fat 0.5 ra
+        rb' = fat 0.5 rb
+        mv = penetration ra' rb'
         work = fmap (negate . (/3)) . minpen
         minpen (V2 x y) =
           if abs x < abs y

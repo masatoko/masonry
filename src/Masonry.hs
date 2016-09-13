@@ -14,7 +14,7 @@ import Data.List (scanl')
 import SDL (($=))
 import qualified SDL
 
-import Type (Rect (..))
+import Type (Rect (..), fat)
 import PrimRoom (makePrimRoom)
 import qualified SVG
 import Separate.Physics (separateRooms)
@@ -39,11 +39,12 @@ test rnd seed = do
   drawRss rss0
   drawRss rss1
 
-  let rs' = removeOutRooms size (last rss1)
+  let rs' = map roundPos $ removeOutRooms size (last rss1)
   SDL.rendererDrawColor rnd $= V4 0 0 0 200
   drawRect rnd $ Rect (pure 0) size
   frame
-  mapM_ (draw blue rnd . roundPos) rs'
+  mapM_ (draw (V4 255 255 255 250) rnd . fat 1) rs'
+  mapM_ (draw (V4 0 255 0 250) rnd) rs'
   SDL.present rnd
 
   where

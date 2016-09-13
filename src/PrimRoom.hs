@@ -41,5 +41,5 @@ mkBox fLength fRatio g = (V2 w h, g'')
     (ratio,g'') = fRatio g'
     ratio' = max 0.1 . min 0.9 $ ratio
     len' = max 6 len
-    w = max 3 $ len' * ratio'
-    h = max 3 $ len' * (1 - ratio')
+    w = max 2 $ len' * ratio'
+    h = max 2 $ len' * (1 - ratio')
