@@ -7,6 +7,7 @@ import Control.Monad (forM_, when)
 import Linear.Affine
 import Linear.V2
 import Linear.V4
+import Linear.Vector
 import System.Random
 import Data.List (scanl')
 
@@ -25,10 +26,13 @@ test rnd seed =
   forM_ (zip [0..] rss) $ \(i,rs) -> do
     when (i `mod` 10 == 0) $ print i
     clearScreen rnd $ V4 0 0 0 255
+    SDL.rendererDrawColor rnd $= V4 255 0 0 200
+    drawRect rnd $ Rect (pure 0) size
+    --
     mapM_ (work rnd) rs
     SDL.present rnd
     --
-    threadDelay 50000
+    threadDelay 10000
   where
     work rnd rect = do
       SDL.rendererDrawColor rnd $= V4 0 0 255 100
@@ -41,7 +45,7 @@ test rnd seed =
     --
     size = V2 30 30
     numRooms = 50
-    numIteration = 200
+    numIteration = 1000
     --
     go _ 0 = []
     go g i = r' : go g' (i-1)

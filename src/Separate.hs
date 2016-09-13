@@ -34,13 +34,13 @@ separate (V2 w0 h0) rs0 = map work irs
         mv = penetration ra rb
         work = fmap (negate . (/10))
 
-        (Rect (P (V2 x y)) _) = ra
-        x' = if | x < 0     -> 1
-                | x > w0    -> -1
-                | otherwise -> 0
-        y' = if | y < 0     -> 1
-                | y > h0    -> -1
-                | otherwise -> 0
+        (Rect (P (V2 x y)) (V2 w h)) = ra
+        x' = if | x < 0      -> 0.5
+                | x + w > w0 -> -0.5
+                | otherwise  -> 0
+        y' = if | y < 0      -> 0.5
+                | y + h > h0 -> -0.5
+                | otherwise  -> 0
         outer = V2 x' y'
 
 penetration :: Room -> Room -> Maybe (V2 Double)
