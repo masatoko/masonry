@@ -14,7 +14,7 @@ import SDL (($=))
 import qualified SDL
 
 import Type
-import Masonry (test)
+import Masonry (generate)
 import Conf
 
 sizeW :: Int
@@ -33,24 +33,27 @@ main = do
 
   SDL.initializeAll
 
-  win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 500 500}
+  let w = fromIntegral $ 10 * confWidth conf + 200
+      h = fromIntegral $ 10 * confHeight conf + 200
+  win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 w h}
   SDL.showWindow win
 
-  generate conf arg win
+  go conf arg win
   _ <- getChar
 
   SDL.destroyWindow win
   SDL.quit
 
-generate :: Conf -> String -> SDL.Window -> IO ()
-generate conf arg win = do
-  r <- SDL.createRenderer win 0 SDL.defaultRenderer
-  SDL.rendererDrawBlendMode r $= SDL.BlendAlphaBlend
-  SDL.clear r
-  --
-  let i = read arg
-  forM_ [0..] $ \x -> do
-    test conf r $ i + x
-    threadDelay 1000000
-  --
-  SDL.present r
+  where
+    go :: Conf -> String -> SDL.Window -> IO ()
+    go conf arg win = do
+      r <- SDL.createRenderer win 0 SDL.defaultRenderer
+      SDL.rendererDrawBlendMode r $= SDL.BlendAlphaBlend
+      SDL.clear r
+      --
+      let i = read arg
+      forM_ [0..] $ \x -> do
+        generate conf r $ i + x
+        threadDelay 1000000
+      --
+      SDL.present r

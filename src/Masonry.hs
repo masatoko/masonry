@@ -1,5 +1,5 @@
 module Masonry
-( test
+( generate
 ) where
 
 import Control.Concurrent (threadDelay)
@@ -23,8 +23,8 @@ import Field
 
 import Render
 
-test :: Conf -> SDL.Renderer -> Int -> IO ()
-test conf rnd seed = do
+generate :: Conf -> SDL.Renderer -> Int -> IO ()
+generate conf rnd seed = do
   clearScreen rnd black
   when (confVerbose conf) . forM_ rs0 $ \r -> do
       draw blue rnd r
