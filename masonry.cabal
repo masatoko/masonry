@@ -18,10 +18,10 @@ library
   exposed-modules:     Masonry
                      , PrimRoom
                      , RandNum
+                     , Render
                      , Type
                      , SVG
-                     , Separate
-                     , Render
+                     , Separate.Physics
   build-depends:       base >= 4.7 && < 5
                      , sdl2
                      , random

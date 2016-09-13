@@ -1,6 +1,6 @@
 {-# LANGUAGE MultiWayIf #-}
 
-module Separate
+module Separate.Physics
 ( separate
 ) where
 

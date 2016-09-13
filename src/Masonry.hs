@@ -17,7 +17,7 @@ import qualified SDL
 import Type (Rect (..))
 import PrimRoom (makePrimRoom)
 import qualified SVG
-import Separate (separate)
+import Separate.Physics (separate)
 
 import Render
 
