@@ -15,8 +15,7 @@ import qualified SDL
 
 import Type
 import Masonry (test)
-import PrimRoom (makePrimRoom)
-import Render (drawRect)
+import Conf
 
 sizeW :: Int
 sizeW = 40
@@ -28,7 +27,10 @@ size = V2 (fromIntegral sizeW) (fromIntegral sizeH)
 
 main :: IO ()
 main = do
-  (arg:_) <- getArgs
+  (pathConf:arg:_) <- getArgs
+  conf <- importConf pathConf
+  print conf
+
   SDL.initializeAll
 
   win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 500 500}
