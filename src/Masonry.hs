@@ -62,6 +62,7 @@ test conf rnd seed = do
       field = wallField `unionField` floorField
   -- print field
   mapM_ putStrLn $ dumpField (confWidth conf) field
+  mapM_ putStrLn $ dumpFieldBy cellToIndex (confWidth conf) field
   -- Rasterise
 
   where
@@ -118,3 +119,8 @@ exportRooms path (V2 w h) rs =
                      (SVG.Fill "#000000" 1)
                      (SVG.Stroke "#ffffff" 0 0)
     rs' = bg : map (\r -> SVG.Object (SVG.SRect r) fill stroke) rs
+
+cellToIndex :: Cell -> String
+cellToIndex Empty = "0"
+cellToIndex Floor = "10"
+cellToIndex Wall  = "100"

@@ -3,11 +3,13 @@ module Field
 , Cell (..)
 , unionField
 , rectToCellField
+, dumpFieldBy
 , dumpField
 ) where
 
 import Linear.Affine
 import Linear.V2
+import Data.List (intercalate)
 
 import Type
 
@@ -39,7 +41,7 @@ rectToCellField trueCell size rect =
   Field $ map toCell ps
   where
     V2 w h = round <$> size
-    ps = map ((+ P (V2 0.5 0.5)) . fmap fromIntegral) $ [P (V2 x y) | y <- [0..(h::Int)], x <- [0..(w::Int)]]
+    ps = map ((+ P (V2 0.5 0.5)) . fmap fromIntegral) [P (V2 x y) | y <- [0..(h::Int)], x <- [0..(w::Int)]]
     --
     toCell p = if p `withinRect` rect
                  then trueCell
@@ -47,16 +49,25 @@ rectToCellField trueCell size rect =
 
 --
 
+dumpFieldBy :: (Cell -> String) -> Int -> Field Cell -> [String]
+dumpFieldBy toStr width (Field cs0) = go cs0
+  where
+    go [] = []
+    go cs =
+      let (as, bs) = splitAt (width + 1) cs
+          line = intercalate "," $ map toStr as
+      in line : go bs
+
 dumpField :: Int -> Field Cell -> [String]
 dumpField width (Field cs0) = go cs0
   where
     go [] = []
     go cs =
       let (as, bs) = splitAt (width + 1) cs
-          line = concatMap toChar as
+          line = concatMap toStr as
       in line : go bs
 
-    toChar :: Cell -> String
-    toChar Empty = " _"
-    toChar Floor = " ."
-    toChar Wall  = " #"
+    toStr :: Cell -> String
+    toStr Empty = " _"
+    toStr Floor = " ."
+    toStr Wall  = " #"
