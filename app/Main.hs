@@ -2,6 +2,7 @@
 
 module Main where
 
+import System.Exit (exitSuccess)
 import System.Environment (getArgs)
 import Control.Monad (when, forM_)
 import Control.Concurrent (threadDelay)
@@ -56,7 +57,9 @@ main = do
       let i = read arg
       forM_ [0..] $ \x -> do
         generate pathExport conf r $ i + x
-        threadDelay 1000000
-        error "exit"
+        --
+        putStrLn "--"
+        -- c <- getChar
+        -- when (c == 'q') exitSuccess
       --
       SDL.present r

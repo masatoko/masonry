@@ -31,7 +31,7 @@ generate pathExport conf rnd seed = do
   when (confVerbose conf) . forM_ rs0 $ \r -> do
       draw blue rnd r
       SDL.present rnd
-      threadDelay 30000
+      threadDelay 10000
   let drawRss rss =
         forM_ (zip [0..] rss) $ \(i,rs) ->
           when (go i) $ do
@@ -69,15 +69,15 @@ generate pathExport conf rnd seed = do
   writeFile pathPretty . unlines $ pretty
   writeFile path . unlines $ dumpFieldBy cellToIndex (confWidth conf) field
   -- Rasterise
-
+  when (confVerbose conf) $ threadDelay 1000000
   where
     size = V2 (fromIntegral $ confWidth conf) (fromIntegral $ confHeight conf)
     numRooms = confNumRooms conf
     --
     go i
       | not (confVerbose conf) = False
-      | i < 100                = i `mod` 3 == 0
-      | otherwise              = i `mod` 10 == 0
+      | i < 100                = i `mod` 10 == 0
+      | otherwise              = i `mod` 50 == 0
 
     frame = do
       SDL.rendererDrawColor rnd $= V4 255 0 0 200
