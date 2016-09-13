@@ -83,8 +83,9 @@ test rnd seed = do
 removeOutRooms :: V2 Double -> [Rect Double] -> [Rect Double]
 removeOutRooms (V2 w' h') = filter within
   where
-    within (Rect (P (V2 x y)) (V2 w h)) =
-      x >= 0 && x + w <= w' && y >= 0 && y + h <= h'
+    within rect =
+      let (Rect (P (V2 x y)) (V2 w h)) = fat 1 rect
+      in x >= 0 && x + w <= w' && y >= 0 && y + h <= h'
 
 roundPos :: Rect Double -> Rect Double
 roundPos (Rect pos size) =

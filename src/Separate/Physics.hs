@@ -34,10 +34,10 @@ separate (V2 w0 h0) hold rs0 = map work irs
         --
         n = fromIntegral $ 1 `max` length vs
         delta = (/ n) <$> sum vs
-        -- delta = fromMaybe (pure 0) . lastMay $ sortBy ordAbs vs
         ordAbs x y = work x `compare` work y
           where
             work (V2 a b) = abs a + abs b
+        -- delta = fromMaybe (pure 0) . lastMay $ sortBy ordAbs vs
 
     exclusion :: Room -> Room -> Maybe (V2 Double)
     exclusion ra rb = ((outer +) . work) <$> mv
@@ -59,7 +59,6 @@ separate (V2 w0 h0) hold rs0 = map work irs
                 | y + h > h0 -> V2 hold (-hold)
                 | otherwise  -> pure 0
         outer = vx + vy
-        -- outer = pure 0
 
 penetration :: Room -> Room -> Maybe (V2 Double)
 penetration ra rb =
@@ -77,4 +76,5 @@ penetration ra rb =
     work x = if x >= 0 then Just x else Nothing
     absMin x y = if abs x < abs y then x else y
 
-box (Rect (P (V2 x y)) (V2 w h)) = (V2 x y, V2 (x + w) (y + h))
+    box :: Num a => Rect a -> (V2 a, V2 a)
+    box (Rect (P (V2 x y)) (V2 w h)) = (V2 x y, V2 (x + w) (y + h))
