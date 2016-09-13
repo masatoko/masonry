@@ -15,13 +15,14 @@ type RandFunc g = g -> (Double, g)
 -- Make Room
 
 makePrimRoom :: RandomGen g => V2 Double -> g -> (Rect Double, g)
-makePrimRoom boundarySize g = (Rect pos' size, g'')
+makePrimRoom boundarySize g = (Rect pos' size', g'')
   where
     (pos,g')   = mkPoint boundarySize g
     (size,g'') = mkBox fLength fRatio g'
-    pos' = pos - P (size ^/ 2)
+    pos'  = (fromIntegral . round) <$> (pos - P (size ^/ 2))
+    size' = (fromIntegral . round) <$> size
 
-    fLength = normRandom 8 4
+    fLength = normRandom 8 6
     fRatio  = normRandom 0.5 0.2
 
 -- Random Shapes
@@ -39,6 +40,6 @@ mkBox fLength fRatio g = (V2 w h, g'')
     (len,g')    = fLength g
     (ratio,g'') = fRatio g'
     ratio' = max 0.1 . min 0.9 $ ratio
-    len' = max 2 len
-    w = max 1 $ len' * ratio'
-    h = max 1 $ len' * (1 - ratio')
+    len' = max 6 len
+    w = max 3 $ len' * ratio'
+    h = max 3 $ len' * (1 - ratio')
