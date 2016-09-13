@@ -23,8 +23,8 @@ import Field
 
 import Render
 
-generate :: Conf -> SDL.Renderer -> Int -> IO ()
-generate conf rnd seed = do
+generate :: FilePath -> Conf -> SDL.Renderer -> Int -> IO ()
+generate pathExport conf rnd seed = do
   clearScreen rnd black
   when (confVerbose conf) . forM_ rs0 $ \r -> do
       draw blue rnd r
@@ -60,9 +60,12 @@ generate conf rnd seed = do
   let wallField = foldl1 unionField . map (rectToCellField Wall size . fat 1) $ rs'
       floorField = foldl1 unionField . map (rectToCellField Floor size) $ rs'
       field = wallField `unionField` floorField
-  -- print field
-  mapM_ putStrLn $ dumpField (confWidth conf) field
-  mapM_ putStrLn $ dumpFieldBy cellToIndex (confWidth conf) field
+  let pretty = dumpField (confWidth conf) field
+  mapM_ putStrLn pretty
+  let pathPretty = pathExport ++ "_" ++ show seed ++ "_pretty.txt"
+      path = pathExport ++ "_" ++ show seed ++ "_data.txt"
+  writeFile pathPretty . unlines $ pretty
+  writeFile path . unlines $ dumpFieldBy cellToIndex (confWidth conf) field
   -- Rasterise
 
   where

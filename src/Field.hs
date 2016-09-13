@@ -68,6 +68,6 @@ dumpField width (Field cs0) = go cs0
       in line : go bs
 
     toStr :: Cell -> String
-    toStr Empty = " _"
+    toStr Empty = "  "
     toStr Floor = " ."
     toStr Wall  = " #"

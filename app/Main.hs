@@ -27,9 +27,11 @@ size = V2 (fromIntegral sizeW) (fromIntegral sizeH)
 
 main :: IO ()
 main = do
-  (pathConf:arg:_) <- getArgs
+  (pathConf:pathExport:arg:_) <- getArgs
   conf <- importConf pathConf
+
   print conf
+  putStrLn $ "Export to ... " ++ pathExport
 
   SDL.initializeAll
 
@@ -38,22 +40,22 @@ main = do
   win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 w h}
   SDL.showWindow win
 
-  go conf arg win
+  go pathExport conf arg win
   _ <- getChar
 
   SDL.destroyWindow win
   SDL.quit
 
   where
-    go :: Conf -> String -> SDL.Window -> IO ()
-    go conf arg win = do
+    go :: FilePath -> Conf -> String -> SDL.Window -> IO ()
+    go pathExport conf arg win = do
       r <- SDL.createRenderer win 0 SDL.defaultRenderer
       SDL.rendererDrawBlendMode r $= SDL.BlendAlphaBlend
       SDL.clear r
       --
       let i = read arg
       forM_ [0..] $ \x -> do
-        generate conf r $ i + x
+        generate pathExport conf r $ i + x
         threadDelay 1000000
       --
       SDL.present r
