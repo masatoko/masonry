@@ -23,16 +23,21 @@ import Render
 
 test :: SDL.Renderer -> Int -> IO ()
 test rnd seed = do
+  clearScreen rnd black
+  forM_ rs0 $ \r -> do
+    draw blue rnd r
+    SDL.present rnd
+    threadDelay 30000
   let drawRss rss =
-        forM_ (zip [0..] rss) $ \(i,rs) -> do
-          when (i `mod` 10 == 0) $ print i
-          clearScreen rnd $ V4 0 0 0 255
-          frame
-          --
-          mapM_ (draw blue rnd) rs
-          SDL.present rnd
-          --
-          threadDelay 5000
+        forM_ (zip [0..] rss) $ \(i,rs) ->
+          when (go i) $ do
+            clearScreen rnd black
+            frame
+            --
+            mapM_ (draw blue rnd) rs
+            SDL.present rnd
+            --
+            threadDelay 30000
 
   let rss0 = separateRooms size 200 0.1 rs0
       rss1 = separateRooms size 500 0     $ last rss0
@@ -48,16 +53,21 @@ test rnd seed = do
   SDL.present rnd
 
   where
+    go i
+      | i < 100   = i `mod` 3 == 0
+      | otherwise = i `mod` 10 == 0
+
     frame = do
       SDL.rendererDrawColor rnd $= V4 255 0 0 200
       drawRect rnd $ Rect (pure 0) size
 
-    blue = V4 0 0 255 100
-    red  = V4 255 0 255 100
+    black = V4 0 0 0 255
+    blue  = V4 0 0 255 100
+    red   = V4 255 0 255 100
     draw color rnd rect = do
       SDL.rendererDrawColor rnd $= color
       fillRect rnd rect
-      SDL.rendererDrawColor rnd $= V4 255 255 255 200
+      SDL.rendererDrawColor rnd $= V4 255 255 255 100
       drawRect rnd rect
     --
     rs0 = go (mkStdGen seed) numRooms

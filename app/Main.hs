@@ -30,7 +30,7 @@ main = do
   (arg:_) <- getArgs
   SDL.initializeAll
 
-  win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 1000 1000}
+  win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 500 500}
   SDL.showWindow win
 
   generate arg win
