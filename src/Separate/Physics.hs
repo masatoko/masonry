@@ -1,18 +1,26 @@
 {-# LANGUAGE MultiWayIf #-}
 
 module Separate.Physics
-( separate
+( separateRooms
+, separate
 ) where
 
+import System.Random
 import Linear.Affine
 import Linear.V2
-import Data.List (foldl', sortBy)
+import Data.List (foldl', sortBy, scanl')
 import Data.Maybe (mapMaybe, fromMaybe)
 import Safe (lastMay)
 
 import Type
 
 type Room = Rect Double
+
+separateRooms :: V2 Double -> Int -> [Room] -> [[Room]]
+separateRooms size seed rs0 =
+  scanl' (\a _ -> separate size a) rs0 [0..numIteration]
+  where
+    numIteration = 100
 
 separate :: V2 Double -> [Room] -> [Room]
 separate (V2 w0 h0) rs0 = map work irs

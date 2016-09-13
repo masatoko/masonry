@@ -17,7 +17,7 @@ import qualified SDL
 import Type (Rect (..))
 import PrimRoom (makePrimRoom)
 import qualified SVG
-import Separate.Physics (separate)
+import Separate.Physics (separateRooms)
 
 import Render
 
@@ -41,16 +41,15 @@ test rnd seed =
       drawRect rnd rect
     --
     rs0 = go (mkStdGen seed) numRooms
-    rss = scanl' (\a _ -> separate size a) rs0 [0..numIteration]
+      where
+        go _ 0 = []
+        go g i = r' : go g' (i-1)
+          where
+            (r',g') = makePrimRoom size g
+    rss = separateRooms size seed rs0
     --
     size = V2 30 30
     numRooms = 50
-    numIteration = 100
-    --
-    go _ 0 = []
-    go g i = r' : go g' (i-1)
-      where
-        (r',g') = makePrimRoom size g
 
 exportRooms :: FilePath -> V2 Double -> [Rect Double] -> IO ()
 exportRooms path (V2 w h) rs =
