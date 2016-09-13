@@ -45,7 +45,7 @@ test rnd seed =
     --
     size = V2 30 30
     numRooms = 50
-    numIteration = 1000
+    numIteration = 100
     --
     go _ 0 = []
     go g i = r' : go g' (i-1)

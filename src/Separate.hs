@@ -6,8 +6,9 @@ module Separate
 
 import Linear.Affine
 import Linear.V2
-import Data.List (foldl')
+import Data.List (foldl', sortBy)
 import Data.Maybe (mapMaybe, fromMaybe)
+import Safe (lastMay)
 
 import Type
 
@@ -26,13 +27,21 @@ separate (V2 w0 h0) rs0 = map work irs
         vs = mapMaybe (exclusion r) rs'
         --
         n = fromIntegral $ 1 `max` length vs
-        delta = (/ n) <$> sum vs
+        delta = (\x -> 2 * x / n) <$> sum vs
+        -- delta = fromMaybe (pure 0) . lastMay $ sortBy ordAbs vs
+        ordAbs x y = work x `compare` work y
+          where
+            work (V2 a b) = abs a + abs b
 
     exclusion :: Room -> Room -> Maybe (V2 Double)
     exclusion ra rb = ((outer +) . work) <$> mv
       where
         mv = penetration ra rb
         work = fmap (negate . (/10))
+        minpen (V2 x y) =
+          if abs x < abs y
+            then V2 x 0
+            else V2 0 y
 
         (Rect (P (V2 x y)) (V2 w h)) = ra
         x' = if | x < 0      -> 0.5

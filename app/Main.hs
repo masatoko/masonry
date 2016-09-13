@@ -2,7 +2,7 @@
 
 module Main where
 
-import Control.Concurrent (threadDelay)
+-- import Control.Concurrent (threadDelay)
 import Linear.Affine
 import Linear.V2
 import Linear.V4
@@ -34,7 +34,7 @@ main = do
   SDL.showWindow win
 
   generate win
-  threadDelay 1000000
+  _ <- getChar
 
   SDL.destroyWindow win
   SDL.quit
