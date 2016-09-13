@@ -25,10 +25,10 @@ import Render
 test :: Conf -> SDL.Renderer -> Int -> IO ()
 test conf rnd seed = do
   clearScreen rnd black
-  forM_ rs0 $ \r -> do
-    draw blue rnd r
-    SDL.present rnd
-    threadDelay 30000
+  when (confVerbose conf) . forM_ rs0 $ \r -> do
+      draw blue rnd r
+      SDL.present rnd
+      threadDelay 30000
   let drawRss rss =
         forM_ (zip [0..] rss) $ \(i,rs) ->
           when (go i) $ do
@@ -58,8 +58,9 @@ test conf rnd seed = do
     numRooms = confNumRooms conf
     --
     go i
-      | i < 100   = i `mod` 3 == 0
-      | otherwise = i `mod` 10 == 0
+      | not (confVerbose conf) = False
+      | i < 100                = i `mod` 3 == 0
+      | otherwise              = i `mod` 10 == 0
 
     frame = do
       SDL.rendererDrawColor rnd $= V4 255 0 0 200

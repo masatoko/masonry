@@ -9,6 +9,8 @@ data Conf = Conf
   , confHeight      :: Int
   , confNumRooms    :: Int
   --
+  , confVerbose     :: Bool
+  --
   , confLengthMu    :: Double
   , confLengthSigma :: Double
   , confRatioMu     :: Double
@@ -31,6 +33,7 @@ importConf path = do
       Conf <$> value "width"
            <*> value "height"
            <*> value "num_rooms"
+           <*> value "verbose"
            <*> value "length_mu"
            <*> value "length_sigma"
            <*> value "ratio_mu"
