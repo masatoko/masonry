@@ -2,6 +2,7 @@
 
 module Main where
 
+import System.Environment (getArgs)
 -- import Control.Concurrent (threadDelay)
 import Linear.Affine
 import Linear.V2
@@ -26,29 +27,24 @@ size = V2 (fromIntegral sizeW) (fromIntegral sizeH)
 
 main :: IO ()
 main = do
-  -- test 111
-
+  (arg:_) <- getArgs
   SDL.initializeAll
 
   win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 600 600}
   SDL.showWindow win
 
-  generate win
+  generate arg win
   _ <- getChar
 
   SDL.destroyWindow win
   SDL.quit
 
-generate :: SDL.Window -> IO ()
-generate win = do
+generate :: String -> SDL.Window -> IO ()
+generate arg win = do
   r <- SDL.createRenderer win 0 SDL.defaultRenderer
   SDL.rendererDrawBlendMode r $= SDL.BlendAlphaBlend
   SDL.clear r
   --
-  -- let room = fst . makePrimRoom size $ mkStdGen 100
-  -- print room
-  -- SDL.rendererDrawColor r $= V4 0 0 255 255
-  -- drawRect r room
-  test r 1010
+  test r $ read arg
   --
   SDL.present r

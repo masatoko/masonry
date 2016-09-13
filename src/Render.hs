@@ -23,7 +23,9 @@ drawRect r rect =
 
 convRect (Rect pos size) = SDL.Rectangle pos' size'
   where
-    pos' = (round . adjust) <$> pos
-    size' = (round . adjust) <$> size
+    pos' = (round . adjustPos) <$> pos
+    size' = (round . adjustSize) <$> size
 
-adjust a = 10 * a
+adjustPos a = adjustSize a + 50
+
+adjustSize a = 10 * a

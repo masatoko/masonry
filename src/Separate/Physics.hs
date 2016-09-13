@@ -20,7 +20,7 @@ separateRooms :: V2 Double -> Int -> [Room] -> [[Room]]
 separateRooms size seed rs0 =
   scanl' (\a _ -> separate size a) rs0 [0..numIteration]
   where
-    numIteration = 100
+    numIteration = 300
 
 separate :: V2 Double -> [Room] -> [Room]
 separate (V2 w0 h0) rs0 = map work irs
@@ -35,8 +35,8 @@ separate (V2 w0 h0) rs0 = map work irs
         vs = mapMaybe (exclusion r) rs'
         --
         n = fromIntegral $ 1 `max` length vs
-        delta = (\x -> 2 * x / n) <$> sum vs
-        -- delta = fromMaybe (pure 0) . lastMay $ sortBy ordAbs vs
+        -- delta = (\x -> 2 * x / n) <$> sum vs
+        delta = fromMaybe (pure 0) . lastMay $ sortBy ordAbs vs
         ordAbs x y = work x `compare` work y
           where
             work (V2 a b) = abs a + abs b
@@ -45,7 +45,7 @@ separate (V2 w0 h0) rs0 = map work irs
     exclusion ra rb = ((outer +) . work) <$> mv
       where
         mv = penetration ra rb
-        work = fmap (negate . (/10))
+        work = fmap (negate . (/10)) . minpen
         minpen (V2 x y) =
           if abs x < abs y
             then V2 x 0
@@ -58,7 +58,8 @@ separate (V2 w0 h0) rs0 = map work irs
         y' = if | y < 0      -> 0.5
                 | y + h > h0 -> -0.5
                 | otherwise  -> 0
-        outer = V2 x' y'
+        -- outer = V2 x' y'
+        outer = pure 0
 
 penetration :: Room -> Room -> Maybe (V2 Double)
 penetration ra rb =
