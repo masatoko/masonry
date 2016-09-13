@@ -10,9 +10,11 @@ import Linear.V4
 import Linear.Vector
 import System.Random
 import Data.List (scanl')
+import Foreign.C.String (withCString)
 
 import SDL (($=))
 import qualified SDL
+import SDL.Raw (saveBMP)
 
 import Type (Rect (..), fat)
 import PrimRoom (makePrimRoom)
@@ -127,3 +129,13 @@ cellToIndex :: Cell -> String
 cellToIndex Empty = "0"
 cellToIndex Floor = "10"
 cellToIndex Wall  = "100"
+
+--
+
+exportSurface :: SDL.Surface -> String -> IO ()
+exportSurface surface path =
+  withCString path $ \cstr -> do
+    saveBMP ps cstr
+    return ()
+  where
+    SDL.Surface ps _ = surface

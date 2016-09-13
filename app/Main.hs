@@ -57,5 +57,6 @@ main = do
       forM_ [0..] $ \x -> do
         generate pathExport conf r $ i + x
         threadDelay 1000000
+        error "exit"
       --
       SDL.present r
