@@ -25,8 +25,8 @@ import Field
 
 import Render
 
-generate :: FilePath -> Conf -> SDL.Renderer -> Int -> IO ()
-generate pathExport conf rnd seed = do
+generate :: Conf -> SDL.Renderer -> Int -> IO ()
+generate conf rnd seed = do
   clearScreen rnd black
   when (confVerbose conf) . forM_ rs0 $ \r -> do
       draw blue rnd r
@@ -64,7 +64,8 @@ generate pathExport conf rnd seed = do
       field = wallField `unionField` floorField
   let pretty = dumpField (confWidth conf) field
   mapM_ putStrLn pretty
-  let pathPretty = pathExport ++ "_" ++ show seed ++ "_pretty.txt"
+  let pathExport = confExportDir conf ++ "/" ++ confExportPrefix conf
+      pathPretty = pathExport ++ "_" ++ show seed ++ "_pretty.txt"
       path = pathExport ++ "_" ++ show seed ++ "_data.txt"
   writeFile pathPretty . unlines $ pretty
   writeFile path . unlines $ dumpFieldBy cellToIndex (confWidth conf) field

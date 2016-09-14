@@ -1,5 +1,9 @@
 width=30
 height=30
+# Export
+out_dir=_export
+out_prefix=result
+#
 num_rooms=50
 # Visualize
 verbose=False
