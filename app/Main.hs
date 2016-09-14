@@ -47,9 +47,11 @@ main = do
       --
       let i = read arg
       let loop x = do
-            generate conf r $ i + x
-            --
+            let i' = i + x
             putStrLn "---------------------------------------------------------"
+            print i'
+            generate conf r i'
+            --
             events <- SDL.pollEvents
             quit <- if confWaitKey conf
                       then do
