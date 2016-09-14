@@ -4,7 +4,7 @@ module Main where
 
 import System.Exit (exitSuccess)
 import System.Environment (getArgs)
-import Control.Monad (when, forM_)
+import Control.Monad (when, unless, forM_)
 import Control.Concurrent (threadDelay)
 import Linear.Affine
 import Linear.V2
@@ -40,7 +40,6 @@ main = do
   SDL.showWindow win
 
   go conf arg win
-  _ <- getChar
 
   SDL.destroyWindow win
   SDL.quit
@@ -53,11 +52,14 @@ main = do
       SDL.clear r
       --
       let i = read arg
-      forM_ [0..] $ \x -> do
-        generate conf r $ i + x
-        --
-        putStrLn "--"
-        -- c <- getChar
-        -- when (c == 'q') exitSuccess
+      let loop x = do
+            generate conf r $ i + x
+            --
+            putStrLn "---------------------------------------------------------"
+            events <- SDL.pollEvents
+            let quit = elem SDL.QuitEvent $ map SDL.eventPayload events
+            unless quit $ loop (x + 1)
+
+      loop 0
       --
       SDL.present r
