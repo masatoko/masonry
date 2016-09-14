@@ -2,7 +2,8 @@ module Conf where
 
 import Data.List.Split (splitOn)
 import qualified Data.Map as M
-import Safe (readMay)
+import Data.Maybe (isNothing, mapMaybe)
+import Safe (readMay, headMay)
 
 data Conf = Conf
   { confWidth       :: Int
@@ -24,9 +25,13 @@ importConf path = do
     Nothing   -> error "Cannot parse config file"
     Just conf -> return conf
   where
-    toAssoc = M.fromList . map toPair
-    toPair line = (key, val)
+    toAssoc = M.fromList . mapMaybe toPair
+    toPair line
+      | isNothing mh   = Nothing
+      | mh == Just '#' = Nothing
+      | otherwise      = Just (key, val)
       where
+        mh = headMay line
         (key:val:_) = splitOn "=" line
 
     mkConf vmap =

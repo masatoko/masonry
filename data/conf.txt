@@ -1,8 +1,11 @@
 width=30
 height=30
 num_rooms=50
+# Visualize
 verbose=False
+# Length (Width + Height)
 length_mu=10
 length_sigma=5
+# Ratio
 ratio_mu=0.5
 ratio_sigma=0.2
