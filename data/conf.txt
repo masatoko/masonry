@@ -1,15 +1,23 @@
-width=30
-height=30
 # Export
 out_dir=_export
 out_prefix=result
+
 #
+width=30
+height=30
 num_rooms=50
-# Visualize
-verbose=False
+
 # Length (Width + Height)
 length_mu=10
 length_sigma=5
+
 # Ratio
 ratio_mu=0.5
 ratio_sigma=0.2
+
+# Iteration
+num_iteration_with_constraint=200
+num_iteration_without_constraint=500
+
+# Visualize
+verbose=False

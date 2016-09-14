@@ -11,6 +11,8 @@ data Conf = Conf
   , confExportDir    :: FilePath
   , confExportPrefix :: String
   , confNumRooms     :: Int
+  , confNumItWithConst :: Int
+  , confNumItWithoutConst :: Int
   --
   , confVerbose      :: Bool
   --
@@ -43,6 +45,8 @@ importConf path = do
            <*> str   "out_dir"
            <*> str   "out_prefix"
            <*> value "num_rooms"
+           <*> value "num_iteration_with_constraint"
+           <*> value "num_iteration_without_constraint"
            <*> value "verbose"
            <*> value "length_mu"
            <*> value "length_sigma"

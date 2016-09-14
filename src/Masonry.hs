@@ -43,8 +43,8 @@ generate conf rnd seed = do
             --
             threadDelay 30000
 
-  let rss0 = separateRooms conf 200 0.1 rs0
-      rss1 = separateRooms conf 500 0     $ last rss0
+  let rss0 = separateRooms conf (confNumItWithConst conf) 0.1 rs0
+      rss1 = separateRooms conf (confNumItWithoutConst conf) 0 $ last rss0
   drawRss rss0
   drawRss rss1
 
