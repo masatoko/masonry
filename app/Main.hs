@@ -18,14 +18,6 @@ import Type
 import Masonry (generate)
 import Conf
 
-sizeW :: Int
-sizeW = 40
-
-sizeH :: Int
-sizeH = 40
-
-size = V2 (fromIntegral sizeW) (fromIntegral sizeH)
-
 main :: IO ()
 main = do
   (pathConf:arg:_) <- getArgs

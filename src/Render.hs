@@ -21,11 +21,14 @@ drawRect :: SDL.Renderer -> Rect Double -> IO ()
 drawRect r rect =
   SDL.drawRect r $ Just (convRect rect)
 
+convRect :: (Num t, RealFrac t, Integral a) => Rect t -> SDL.Rectangle a
 convRect (Rect pos size) = SDL.Rectangle pos' size'
   where
     pos' = (round . adjustPos) <$> pos
     size' = (round . adjustSize) <$> size
 
+adjustPos :: Num a => a -> a
 adjustPos a = adjustSize a + 100
 
+adjustSize :: Num a => a -> a
 adjustSize a = 10 * a
