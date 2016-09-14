@@ -10,6 +10,8 @@ import Linear.Affine
 import Linear.V2
 import Linear.V4
 import System.Random
+import Data.List (find)
+import Data.Maybe (isJust)
 
 import SDL (($=))
 import qualified SDL
@@ -49,9 +51,28 @@ main = do
             --
             putStrLn "---------------------------------------------------------"
             events <- SDL.pollEvents
-            let quit = elem SDL.QuitEvent $ map SDL.eventPayload events
+            quit <- if confWaitKey conf
+                      then do
+                        putStrLn "Waiting for key input"
+                        waitKey
+                      else
+                        return . elem SDL.QuitEvent $ map SDL.eventPayload events
             unless quit $ loop (x + 1)
 
       loop 0
       --
       SDL.present r
+
+waitKey :: IO Bool
+waitKey = do
+  events <- SDL.pollEvents
+  let quit = elem SDL.QuitEvent $ map SDL.eventPayload events
+      anykey = isJust . find isKeyEvent $ map SDL.eventPayload events
+  if quit || anykey
+    then do
+      putStrLn "Next ..."
+      return quit
+    else waitKey
+  where
+    isKeyEvent (SDL.KeyboardEvent _) = True
+    isKeyEvent _                     = False

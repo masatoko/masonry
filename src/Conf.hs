@@ -13,13 +13,13 @@ data Conf = Conf
   , confNumRooms     :: Int
   , confNumItWithConst :: Int
   , confNumItWithoutConst :: Int
-  --
-  , confVerbose      :: Bool
-  --
   , confLengthMu     :: Double
   , confLengthSigma  :: Double
   , confRatioMu      :: Double
   , confRatioSigma   :: Double
+  --
+  , confVerbose      :: Bool
+  , confWaitKey      :: Bool
   } deriving Show
 
 importConf :: FilePath -> IO Conf
@@ -47,11 +47,12 @@ importConf path = do
            <*> value "num_rooms"
            <*> value "num_iteration_with_constraint"
            <*> value "num_iteration_without_constraint"
-           <*> value "verbose"
            <*> value "length_mu"
            <*> value "length_sigma"
            <*> value "ratio_mu"
            <*> value "ratio_sigma"
+           <*> value "verbose"
+           <*> value "waitkey"
       where
         value key =
           case M.lookup key vmap >>= readMay of
