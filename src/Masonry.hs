@@ -128,8 +128,8 @@ exportRooms path (V2 w h) rs =
 
 cellToIndex :: Cell -> String
 cellToIndex Empty = "0"
-cellToIndex Floor = "10"
-cellToIndex Wall  = "100"
+cellToIndex Floor = "11"
+cellToIndex Wall  = "101"
 
 --
 

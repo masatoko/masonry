@@ -41,7 +41,7 @@ rectToCellField trueCell size rect =
   Field $ map toCell ps
   where
     V2 w h = round <$> size
-    ps = map ((+ P (V2 0.5 0.5)) . fmap fromIntegral) [P (V2 x y) | y <- [0..(h::Int)], x <- [0..(w::Int)]]
+    ps = map ((+ P (V2 0.5 0.5)) . fmap fromIntegral) [P (V2 x y) | y <- [0..(h-1::Int)], x <- [0..(w-1::Int)]]
     --
     toCell p = if p `withinRect` rect
                  then trueCell
@@ -54,8 +54,8 @@ dumpFieldBy toStr width (Field cs0) = go cs0
   where
     go [] = []
     go cs =
-      let (as, bs) = splitAt (width + 1) cs
-          line = intercalate "," $ map toStr as
+      let (as, bs) = splitAt width cs
+          line = (intercalate "," $ map toStr as) ++ ","
       in line : go bs
 
 dumpField :: Int -> Field Cell -> [String]
@@ -63,7 +63,7 @@ dumpField width (Field cs0) = go cs0
   where
     go [] = []
     go cs =
-      let (as, bs) = splitAt (width + 1) cs
+      let (as, bs) = splitAt width cs
           line = concatMap toStr as
       in line : go bs
 
