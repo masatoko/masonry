@@ -68,7 +68,7 @@ generate conf rnd seed = do
       pathPretty = pathExport ++ "_" ++ show seed ++ "_pretty.txt"
       path = pathExport ++ "_" ++ show seed ++ "_data.txt"
   writeFile pathPretty . unlines $ pretty
-  writeFile path . unlines $ dumpFieldBy cellToIndex (confWidth conf) field
+  writeFile path $ dumpFieldBy cellToIndex (confWidth conf) field
   -- Rasterise
   when (confVerbose conf) $ threadDelay 1000000
   where

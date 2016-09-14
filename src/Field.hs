@@ -49,14 +49,9 @@ rectToCellField trueCell size rect =
 
 --
 
-dumpFieldBy :: (Cell -> String) -> Int -> Field Cell -> [String]
-dumpFieldBy toStr width (Field cs0) = go cs0
-  where
-    go [] = []
-    go cs =
-      let (as, bs) = splitAt width cs
-          line = (intercalate "," $ map toStr as) ++ ","
-      in line : go bs
+dumpFieldBy :: (Cell -> String) -> Int -> Field Cell -> String
+dumpFieldBy toStr width (Field cs0) =
+  intercalate "," $ map toStr cs0
 
 dumpField :: Int -> Field Cell -> [String]
 dumpField width (Field cs0) = go cs0
