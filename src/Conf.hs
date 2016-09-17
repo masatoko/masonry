@@ -35,7 +35,7 @@ importConf path = do
     toPair line
       | null line      = Nothing
       | isNothing mh   = Nothing
-      | mh == Just '#' = Nothing
+      | mh == Just ';' = Nothing
       | otherwise      = Just (key, val)
       where
         mh = headMay line
