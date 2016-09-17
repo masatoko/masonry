@@ -1,5 +1,7 @@
 module Conf where
 
+import System.IO
+import qualified Control.Exception as E
 import Data.List.Split (splitOn)
 import qualified Data.Map as M
 import Data.Maybe (isNothing, mapMaybe)
@@ -24,7 +26,7 @@ data Conf = Conf
 
 importConf :: FilePath -> IO Conf
 importConf path = do
-  vmap <- (toAssoc . lines) <$> readFile path
+  vmap <- (toAssoc . lines) <$> readUtf8File' path
   case mkConf vmap of
     Left msg   -> error msg
     Right conf -> return conf
@@ -63,3 +65,11 @@ importConf path = do
           case M.lookup key vmap of
             Nothing -> Left $ "Missing key: " ++ key
             Just v  -> Right v
+
+readUtf8File' :: FilePath -> IO String
+readUtf8File' path =
+  withFile path ReadMode $ \h -> do
+    hSetEncoding h utf8_bom
+    cs <- hGetContents h
+    mapM_ E.evaluate cs
+    return cs

@@ -22,7 +22,9 @@ import Conf
 
 main :: IO ()
 main = do
-  (pathConf:arg:_) <- getArgs
+  args <- getArgs
+  let infinite = "-1" `notElem` args
+      (pathConf:arg:_) = filter (/= "-1") args
   conf <- importConf pathConf
   print conf
 
@@ -33,14 +35,14 @@ main = do
   win <- SDL.createWindow "Masonry" SDL.defaultWindow {SDL.windowInitialSize = V2 w h}
   SDL.showWindow win
 
-  go conf arg win
+  go conf arg infinite win
 
   SDL.destroyWindow win
   SDL.quit
 
   where
-    go :: Conf -> String -> SDL.Window -> IO ()
-    go conf arg win = do
+    go :: Conf -> String -> Bool -> SDL.Window -> IO ()
+    go conf arg infinite win = do
       r <- SDL.createRenderer win 0 SDL.defaultRenderer
       SDL.rendererDrawBlendMode r $= SDL.BlendAlphaBlend
       SDL.clear r
@@ -59,8 +61,8 @@ main = do
                         waitKey
                       else
                         return . elem SDL.QuitEvent $ map SDL.eventPayload events
-            unless quit $ loop (x + 1)
-
+            let continue = not quit
+            when (infinite && continue) $ loop (x + 1)
       loop 0
       --
       SDL.present r
